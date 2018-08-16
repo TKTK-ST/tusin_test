@@ -3,12 +3,12 @@
 
 //メイン関数 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine, int nCmdShow ){
-	
+
 	//初期設定
 	ChangeWindowMode(TRUE);//ウィンドウを開く
 	SetGraphMode(600,640,32);//ウィンドウを指定の大きさとカラービット数にする
-    if( DxLib_Init() == -1 )return -1; //dxlibの初期化に失敗した場合は-1を返してゲーム終了
-    SetDrawScreen(DX_SCREEN_BACK);//裏画面で画像を描き、完成するたびに表示する形式
+	if( DxLib_Init() == -1 )return -1; //dxlibの初期化に失敗した場合は-1を返してゲーム終了
+	SetDrawScreen(DX_SCREEN_BACK);//裏画面で画像を描き、完成するたびに表示する形式
     
 
 	//ボールの大きさと移動の向きの設定
@@ -20,9 +20,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	int DataLength;
 
 	ip.d1 = 172;
-    ip.d2 = 16;
-    ip.d3 = 8;
-    ip.d4 = 26;
+	ip.d2 = 16;
+	ip.d3 = 8;
+	ip.d4 = 26;
 
 	Nethandle = MakeUDPSocket(6666);
 
