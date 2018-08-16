@@ -43,18 +43,18 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	int vecX = 1,vecY = 1;//最初の円の移動の方向
 
     while(!ProcessMessage()){//エラーが出るまで以下を繰り返す
-	
+		
 		NetWorkSendUDP(Nethandle,ip,5555,&x1,sizeof(x1));
 		NetWorkSendUDP(Nethandle,ip,5555,&y1,sizeof(x1));
 		NetWorkRecvUDP( Nethandle, NULL, NULL, &x2, sizeof(x2), FALSE );
 		NetWorkRecvUDP( Nethandle, NULL, NULL, &y2, sizeof(y2), FALSE );
-
+		
 		DrawCircle(x1,y1,20,GetColor(255,255,255),TRUE);
 		DrawCircle(x2,y2,20,GetColor(0,0,255),TRUE);
-
+		
 		ScreenFlip();//裏で描いた絵を表に出す
 		ClearDrawScreen();//画面に書かれた絵を消す
-
+		
 		//円の中心座標を変化させる
 		x1 += 5*vecX;//x方向の速さ
 		y1 += 5*vecY;//y方向の速さ
