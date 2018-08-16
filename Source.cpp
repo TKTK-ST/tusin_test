@@ -44,23 +44,23 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
     while(!ProcessMessage()){//ÉGÉâÅ[Ç™èoÇÈÇ‹Ç≈à»â∫ÇåJÇËï‘Ç∑
 		
-		NetWorkSendUDP(Nethandle,ip,5555,&x1,sizeof(x1));
-		NetWorkSendUDP(Nethandle,ip,5555,&y1,sizeof(x1));
-		NetWorkRecvUDP( Nethandle, NULL, NULL, &x2, sizeof(x2), FALSE );
-		NetWorkRecvUDP( Nethandle, NULL, NULL, &y2, sizeof(y2), FALSE );
+        NetWorkSendUDP(Nethandle,ip,5555,&x1,sizeof(x1));
+        NetWorkSendUDP(Nethandle,ip,5555,&y1,sizeof(x1));
+        NetWorkRecvUDP( Nethandle, NULL, NULL, &x2, sizeof(x2), FALSE );
+        NetWorkRecvUDP( Nethandle, NULL, NULL, &y2, sizeof(y2), FALSE );
 		
 		DrawCircle(x1,y1,20,GetColor(255,255,255),TRUE);
 		DrawCircle(x2,y2,20,GetColor(0,0,255),TRUE);
 		
-		ScreenFlip();//ó†Ç≈ï`Ç¢ÇΩäGÇï\Ç…èoÇ∑
-		ClearDrawScreen();//âÊñ Ç…èëÇ©ÇÍÇΩäGÇè¡Ç∑
+        ScreenFlip();//ó†Ç≈ï`Ç¢ÇΩäGÇï\Ç…èoÇ∑
+        ClearDrawScreen();//âÊñ Ç…èëÇ©ÇÍÇΩäGÇè¡Ç∑
 		
-		//â~ÇÃíÜêSç¿ïWÇïœâªÇ≥ÇπÇÈ
-		x1 += 5*vecX;//xï˚å¸ÇÃë¨Ç≥
-		y1 += 5*vecY;//yï˚å¸ÇÃë¨Ç≥
+        //â~ÇÃíÜêSç¿ïWÇïœâªÇ≥ÇπÇÈ
+        x1 += 5*vecX;//xï˚å¸ÇÃë¨Ç≥
+        y1 += 5*vecY;//yï˚å¸ÇÃë¨Ç≥
 
-		if(CheckHitKey(KEY_INPUT_RIGHT)) x1 += 10;
-		if(CheckHitKey(KEY_INPUT_LEFT)) x1 -= 10;
+        if(CheckHitKey(KEY_INPUT_RIGHT)) x1 += 10;
+        if(CheckHitKey(KEY_INPUT_LEFT)) x1 -= 10;
 
 		//ï«Ç…ìñÇΩÇ¡ÇΩÇ∆Ç´ÇÃîΩéÀÇê›íË
         if(x1>600)vecX = -2;//xç¿ïW640í¥Ç≈îΩì]
@@ -72,7 +72,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
         if(CheckHitKey(KEY_INPUT_RETURN))break;
 
     }//while
-	DeleteUDPSocket(Nethandle);
+    DeleteUDPSocket(Nethandle);
     DxLib_End() ;//dxlibÇï¬Ç∂ÇÈ
     return 0 ;
 }
