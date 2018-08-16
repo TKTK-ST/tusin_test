@@ -27,12 +27,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	Nethandle = MakeUDPSocket(6666);
 
 	while(CheckNetWorkRecvUDP(Nethandle) != TRUE ){
-		if( ProcessMessage() < 0 ) break ;
+		if( ProcessMessage() < 0 ) break;
 	}
 	NetWorkRecvUDP( Nethandle, NULL, NULL, &x2, sizeof(x2), FALSE );
 
 	while(CheckNetWorkRecvUDP(Nethandle) != TRUE ){
-	    if( ProcessMessage() < 0 ) break ;
+	    if( ProcessMessage() < 0 ) break;
 	}
 	NetWorkRecvUDP( Nethandle, NULL, NULL, &y2, sizeof(y2), FALSE );
 
@@ -60,10 +60,9 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 		ScreenFlip();//— ‚Å•`‚¢‚½ŠG‚ð•\‚Éo‚·
 		ClearDrawScreen();//‰æ–Ê‚É‘‚©‚ê‚½ŠG‚ðÁ‚·
 
-
 		//‰~‚Ì’†SÀ•W‚ð•Ï‰»‚³‚¹‚é
-        x1 += 5*vecX;//x•ûŒü‚Ì‘¬‚³
-        y1 += 5*vecY;//y•ûŒü‚Ì‘¬‚³
+		x1 += 5*vecX;//x•ûŒü‚Ì‘¬‚³
+		y1 += 5*vecY;//y•ûŒü‚Ì‘¬‚³
 
 		if(CheckHitKey(KEY_INPUT_RIGHT)) x1 += 10;
 		if(CheckHitKey(KEY_INPUT_LEFT)) x1 -= 10;
@@ -77,7 +76,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
         if(CheckHitKey(KEY_INPUT_RETURN))break;
 
-    }//ƒ‹[ƒv‚Í‚±‚±‚Ü‚Å
+    }//while
 	DeleteUDPSocket(Nethandle);
     DxLib_End() ;//dxlib‚ð•Â‚¶‚é
     return 0 ;
