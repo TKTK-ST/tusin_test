@@ -1,18 +1,18 @@
 #include "DxLib.h"
 
 
-//ƒƒCƒ“ŠÖ” 
+//ãƒ¡ã‚¤ãƒ³é–¢æ•° 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine, int nCmdShow ){
 	
-	//‰Šúİ’è
-	ChangeWindowMode(TRUE);//ƒEƒBƒ“ƒhƒE‚ğŠJ‚­
-	SetGraphMode(600,640,32);//ƒEƒBƒ“ƒhƒE‚ğw’è‚Ì‘å‚«‚³‚ÆƒJƒ‰[ƒrƒbƒg”‚É‚·‚é
-    if( DxLib_Init() == -1 )return -1; //dxlib‚Ì‰Šú‰»‚É¸”s‚µ‚½ê‡‚Í-1‚ğ•Ô‚µ‚ÄƒQ[ƒ€I—¹
-    SetDrawScreen(DX_SCREEN_BACK);//— ‰æ–Ê‚Å‰æ‘œ‚ğ•`‚«AŠ®¬‚·‚é‚½‚Ñ‚É•\¦‚·‚éŒ`®
+	//åˆæœŸè¨­å®š
+	ChangeWindowMode(TRUE);//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’é–‹ã
+	SetGraphMode(600,640,32);//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’æŒ‡å®šã®å¤§ãã•ã¨ã‚«ãƒ©ãƒ¼ãƒ“ãƒƒãƒˆæ•°ã«ã™ã‚‹
+    if( DxLib_Init() == -1 )return -1; //dxlibã®åˆæœŸåŒ–ã«å¤±æ•—ã—ãŸå ´åˆã¯-1ã‚’è¿”ã—ã¦ã‚²ãƒ¼ãƒ çµ‚äº†
+    SetDrawScreen(DX_SCREEN_BACK);//è£ç”»é¢ã§ç”»åƒã‚’æãã€å®Œæˆã™ã‚‹ãŸã³ã«è¡¨ç¤ºã™ã‚‹å½¢å¼
     
 
-	//ƒ{[ƒ‹‚Ì‘å‚«‚³‚ÆˆÚ“®‚ÌŒü‚«‚Ìİ’è
-	int x1 = 200,y1 = 40;//Å‰‚Ì‰~‚Ì’†SÀ•W
+	//ãƒœãƒ¼ãƒ«ã®å¤§ãã•ã¨ç§»å‹•ã®å‘ãã®è¨­å®š
+	int x1 = 200,y1 = 40;//æœ€åˆã®å††ã®ä¸­å¿ƒåº§æ¨™
 	int x2 = 0;
 	int y2 = 0;
 	IPDATA ip;
@@ -23,73 +23,62 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
     ip.d2 = 16;
     ip.d3 = 8;
     ip.d4 = 26;
-	while (!ProcessMessage()){
-		Nethandle = ConnectNetWork(ip, 6666);
-		if (Nethandle != -1) break;
+
+	Nethandle = MakeUDPSocket(6666);
+
+	while(CheckNetWorkRecvUDP(Nethandle) != TRUE ){
+		if( ProcessMessage() < 0 ) break ;
 	}
+	NetWorkRecvUDP( Nethandle, NULL, NULL, &x2, sizeof(x2), FALSE );
 
-	if (Nethandle != -1){
-
-		while( !ProcessMessage()){
-		        // æ“¾‚µ‚Ä‚¢‚È‚¢óMƒf[ƒ^—Ê‚ğ“¾‚é
-		        DataLength = GetNetWorkDataLength( Nethandle );
-
-		        // æ“¾‚µ‚Ä‚È‚¢óMƒf[ƒ^—Ê‚ª‚O‚¶‚á‚È‚¢ê‡‚Íƒ‹[ƒv‚ğ”²‚¯‚é
-		        if( DataLength != 0 ) break ;
-		}
-		NetWorkRecv(Nethandle, &x2,sizeof(x2));
-
-		while( !ProcessMessage()){
-		        // æ“¾‚µ‚Ä‚¢‚È‚¢óMƒf[ƒ^—Ê‚ğ“¾‚é
-		        DataLength = GetNetWorkDataLength( Nethandle );
-
-		        // æ“¾‚µ‚Ä‚È‚¢óMƒf[ƒ^—Ê‚ª‚O‚¶‚á‚È‚¢ê‡‚Íƒ‹[ƒv‚ğ”²‚¯‚é
-		        if( DataLength != 0 ) break ;
-		}
-		NetWorkRecv(Nethandle, &y2,sizeof(y2));
-
-		NetWorkSend(Nethandle, &x1,sizeof(x1));
-		NetWorkSend(Nethandle, &y1,sizeof(x1));
+	while(CheckNetWorkRecvUDP(Nethandle) != TRUE ){
+	    if( ProcessMessage() < 0 ) break ;
 	}
+	NetWorkRecvUDP( Nethandle, NULL, NULL, &y2, sizeof(y2), FALSE );
+
+	NetWorkSendUDP(Nethandle,ip,5555,&x1,sizeof(x1));
+	NetWorkSendUDP(Nethandle,ip,5555,&y1,sizeof(x1));
 
 
-    int vecX = 1,vecY = 1;//Å‰‚Ì‰~‚ÌˆÚ“®‚Ì•ûŒü
+
+    int vecX = 1,vecY = 1;//æœ€åˆã®å††ã®ç§»å‹•ã®æ–¹å‘
 
 
-    while(!ProcessMessage()){//ƒGƒ‰[‚ªo‚é‚Ü‚ÅˆÈ‰º‚ğŒJ‚è•Ô‚·
+    while(!ProcessMessage()){//ã‚¨ãƒ©ãƒ¼ãŒå‡ºã‚‹ã¾ã§ä»¥ä¸‹ã‚’ç¹°ã‚Šè¿”ã™
 		
-		ScreenFlip();//— ‚Å•`‚¢‚½ŠG‚ğ•\‚Éo‚·
-		ClearDrawScreen();//‰æ–Ê‚É‘‚©‚ê‚½ŠG‚ğÁ‚·
+		
+		NetWorkSendUDP(Nethandle,ip,5555,&x1,sizeof(x1));
+		NetWorkSendUDP(Nethandle,ip,5555,&y1,sizeof(x1));
+		NetWorkRecvUDP( Nethandle, NULL, NULL, &x2, sizeof(x2), FALSE );
+		NetWorkRecvUDP( Nethandle, NULL, NULL, &y2, sizeof(y2), FALSE );
 
 
-		NetWorkSend(Nethandle, &x1,sizeof(x1));
-		NetWorkSend(Nethandle, &y1,sizeof(x1));
-		NetWorkRecv(Nethandle, &x2,sizeof(x2));
-		NetWorkRecv(Nethandle, &y2,sizeof(y2));
-
-
-		//— ‰æ–Ê‚É‰~‚ğ•`‚­
+		//è£ç”»é¢ã«å††ã‚’æã
         DrawCircle(x1,y1,20,GetColor(255,255,255),TRUE);
         DrawCircle(x2,y2,20,GetColor(0,0,255),TRUE);
 
-		//‰~‚Ì’†SÀ•W‚ğ•Ï‰»‚³‚¹‚é
-        x1 += 5*vecX;//x•ûŒü‚Ì‘¬‚³
-        y1 += 5*vecY;//y•ûŒü‚Ì‘¬‚³
+		ScreenFlip();//è£ã§æã„ãŸçµµã‚’è¡¨ã«å‡ºã™
+		ClearDrawScreen();//ç”»é¢ã«æ›¸ã‹ã‚ŒãŸçµµã‚’æ¶ˆã™
 
-		if(CheckHitKey(KEY_INPUT_RIGHT)) x1 += 15;
-		if(CheckHitKey(KEY_INPUT_LEFT)) x1 -= 15;
 
-		//•Ç‚É“–‚½‚Á‚½‚Æ‚«‚Ì”½Ë‚ğİ’è
-        if(x1>600)vecX = -2;//xÀ•W640’´‚Å”½“]
-        if(x1<0)vecX = 2;//xÀ•W0’´‚Å”½“]
-        if(y1<0)vecY = 1;//yÀ•W0’´‚Å”½“]
-        if(y1>600)vecY = -1;//xÀ•W480’´‚Å”½“]
+		//å††ã®ä¸­å¿ƒåº§æ¨™ã‚’å¤‰åŒ–ã•ã›ã‚‹
+        x1 += 5*vecX;//xæ–¹å‘ã®é€Ÿã•
+        y1 += 5*vecY;//yæ–¹å‘ã®é€Ÿã•
+
+		if(CheckHitKey(KEY_INPUT_RIGHT)) x1 += 10;
+		if(CheckHitKey(KEY_INPUT_LEFT)) x1 -= 10;
+
+		//å£ã«å½“ãŸã£ãŸã¨ãã®åå°„ã‚’è¨­å®š
+        if(x1>600)vecX = -2;//xåº§æ¨™640è¶…ã§åè»¢
+        if(x1<0)vecX = 2;//xåº§æ¨™0è¶…ã§åè»¢
+        if(y1<0)vecY = 1;//yåº§æ¨™0è¶…ã§åè»¢
+        if(y1>600)vecY = -1;//xåº§æ¨™480è¶…ã§åè»¢
 
 
         if(CheckHitKey(KEY_INPUT_RETURN))break;
 
-    }//ƒ‹[ƒv‚Í‚±‚±‚Ü‚Å
-	CloseNetWork(Nethandle);
-    DxLib_End() ;//dxlib‚ğ•Â‚¶‚é
+    }//ãƒ«ãƒ¼ãƒ—ã¯ã“ã“ã¾ã§
+	DeleteUDPSocket(Nethandle);
+    DxLib_End() ;//dxlibã‚’é–‰ã˜ã‚‹
     return 0 ;
 }
