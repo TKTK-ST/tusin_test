@@ -32,7 +32,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	NetWorkRecvUDP( Nethandle, NULL, NULL, &x2, sizeof(x2), FALSE );
 
 	while(CheckNetWorkRecvUDP(Nethandle) != TRUE ){
-	    if( ProcessMessage() < 0 ) break;
+		if( ProcessMessage() < 0 ) break;
 	}
 	NetWorkRecvUDP( Nethandle, NULL, NULL, &y2, sizeof(y2), FALSE );
 
