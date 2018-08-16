@@ -47,7 +47,6 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 		NetWorkRecvUDP(Nethandle,NULL,NULL,&x2,sizeof(x2),FALSE);
 		NetWorkRecvUDP(Nethandle,NULL,NULL,&y2,sizeof(y2),FALSE);
 
-		//— ‰æ–Ê‚É‰~‚ð•`‚­
 		DrawCircle(x1,y1,20,GetColor(0,0,255),TRUE);
 		DrawCircle(x2,y2,20,GetColor(255,255,255),TRUE);
 
