@@ -42,37 +42,37 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	
 	int vecX = 1,vecY = 1;//Å‰‚Ì‰~‚ÌˆÚ“®‚Ì•ûŒü
 
-    while(!ProcessMessage()){//ƒGƒ‰[‚ªo‚é‚Ü‚ÅˆÈ‰º‚ğŒJ‚è•Ô‚·
-		
-        NetWorkSendUDP(Nethandle,ip,5555,&x1,sizeof(x1));
-        NetWorkSendUDP(Nethandle,ip,5555,&y1,sizeof(x1));
-        NetWorkRecvUDP( Nethandle, NULL, NULL, &x2, sizeof(x2), FALSE );
-        NetWorkRecvUDP( Nethandle, NULL, NULL, &y2, sizeof(y2), FALSE );
-		
+	while(!ProcessMessage()){//ƒGƒ‰[‚ªo‚é‚Ü‚ÅˆÈ‰º‚ğŒJ‚è•Ô‚·
+	
+		NetWorkSendUDP(Nethandle,ip,5555,&x1,sizeof(x1));
+		NetWorkSendUDP(Nethandle,ip,5555,&y1,sizeof(x1));
+		NetWorkRecvUDP( Nethandle, NULL, NULL, &x2, sizeof(x2), FALSE );
+		NetWorkRecvUDP( Nethandle, NULL, NULL, &y2, sizeof(y2), FALSE );
+
 		DrawCircle(x1,y1,20,GetColor(255,255,255),TRUE);
 		DrawCircle(x2,y2,20,GetColor(0,0,255),TRUE);
-		
-        ScreenFlip();//— ‚Å•`‚¢‚½ŠG‚ğ•\‚Éo‚·
-        ClearDrawScreen();//‰æ–Ê‚É‘‚©‚ê‚½ŠG‚ğÁ‚·
-		
-        //‰~‚Ì’†SÀ•W‚ğ•Ï‰»‚³‚¹‚é
-        x1 += 5*vecX;//x•ûŒü‚Ì‘¬‚³
-        y1 += 5*vecY;//y•ûŒü‚Ì‘¬‚³
+	
+		ScreenFlip();//— ‚Å•`‚¢‚½ŠG‚ğ•\‚Éo‚·
+		ClearDrawScreen();//‰æ–Ê‚É‘‚©‚ê‚½ŠG‚ğÁ‚·
 
-        if(CheckHitKey(KEY_INPUT_RIGHT)) x1 += 10;
-        if(CheckHitKey(KEY_INPUT_LEFT)) x1 -= 10;
+		//‰~‚Ì’†SÀ•W‚ğ•Ï‰»‚³‚¹‚é
+		x1 += 5*vecX;//x•ûŒü‚Ì‘¬‚³
+		y1 += 5*vecY;//y•ûŒü‚Ì‘¬‚³
+
+		if(CheckHitKey(KEY_INPUT_RIGHT)) x1 += 10;
+		if(CheckHitKey(KEY_INPUT_LEFT)) x1 -= 10;
 
 		//•Ç‚É“–‚½‚Á‚½‚Æ‚«‚Ì”½Ë‚ğİ’è
-        if(x1>600)vecX = -2;//xÀ•W640’´‚Å”½“]
-        if(x1<0)vecX = 2;//xÀ•W0’´‚Å”½“]
-        if(y1<0)vecY = 1;//yÀ•W0’´‚Å”½“]
-        if(y1>600)vecY = -1;//xÀ•W480’´‚Å”½“]
+		if(x1>600)vecX = -2;//xÀ•W640’´‚Å”½“]
+		if(x1<0)vecX = 2;//xÀ•W0’´‚Å”½“]
+		if(y1<0)vecY = 1;//yÀ•W0’´‚Å”½“]
+		if(y1>600)vecY = -1;//xÀ•W480’´‚Å”½“]
 
 
-        if(CheckHitKey(KEY_INPUT_RETURN))break;
+		if(CheckHitKey(KEY_INPUT_RETURN))break;
 
     }//while
-    DeleteUDPSocket(Nethandle);
-    DxLib_End() ;//dxlib‚ğ•Â‚¶‚é
-    return 0 ;
+	DeleteUDPSocket(Nethandle);
+	DxLib_End() ;//dxlib‚ğ•Â‚¶‚é
+	return 0 ;
 }
