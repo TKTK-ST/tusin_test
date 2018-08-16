@@ -19,75 +19,58 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	int DataLength;
 
 	ip.d1 = 172;
-    ip.d2 = 16;
-    ip.d3 = 8;
-    ip.d4 = 26;
+	ip.d2 = 16;
+	ip.d3 = 8;
+	ip.d4 = 25;
 
-	Nethandle = -1;
-	PreparationListenNetWork( 6666 );
-	while (!ProcessMessage()){
-		Nethandle = GetNewAcceptNetWork() ;
-        if( Nethandle != -1 ){
-			StopListenNetWork();
-			break;
-		}
+	Nethandle = MakeUDPSocket(5555);
+	NetWorkSendUDP(Nethandle,ip,6666,&x1,sizeof(x1));
+	NetWorkSendUDP(Nethandle,ip,6666,&y1,sizeof(y1));
+	while(CheckNetWorkRecvUDP(Nethandle) != TRUE){
+		if(ProcessMessage < 0) break;
 	}
-	NetWorkSend(Nethandle, &x1,sizeof(x1));
-	NetWorkSend(Nethandle, &y1,sizeof(y1));
-	while( !ProcessMessage()){
-            // 取得していない受信データ量を得る
-            DataLength = GetNetWorkDataLength( Nethandle );
-            // 取得してない受信データ量が０じゃない場合はループを抜ける
-            if( DataLength != 0 ) break ;
+	NetWorkRecvUDP(Nethandle,NULL,NULL,&x2,sizeof(x2),FALSE);
+	while(CheckNetWorkRecvUDP(Nethandle) != TRUE){
+		if(ProcessMessage < 0) break;
 	}
-	NetWorkRecv(Nethandle, &x2,sizeof(x2));
-	while( !ProcessMessage()){
-            // 取得していない受信データ量を得る
-            DataLength = GetNetWorkDataLength( Nethandle );
-
-            // 取得してない受信データ量が０じゃない場合はループを抜ける
-            if( DataLength != 0 ) break ;
-	}
-	NetWorkRecv(Nethandle, &y2,sizeof(y2));
+	NetWorkRecvUDP(Nethandle,NULL,NULL,&y2,sizeof(y2),FALSE);
 
 
-    int vecX = 1,vecY = 1;//最初の円の移動の方向
+	int vecX = 1,vecY = 1;//最初の円の移動の方向
 
 
-    while(!ProcessMessage()){//エラーが出るまで以下を繰り返す
+    while(!ProcessMessage()){
 
-		NetWorkSend(Nethandle, &x1,sizeof(x1));
-		NetWorkSend(Nethandle, &y1,sizeof(y1));
-		NetWorkRecv(Nethandle, &x2,sizeof(x2));
-		NetWorkRecv(Nethandle, &y2,sizeof(y2));
+		NetWorkSendUDP(Nethandle,ip,6666,&x1,sizeof(x1));
+		NetWorkSendUDP(Nethandle,ip,6666,&y1,sizeof(y1));
+		NetWorkRecvUDP(Nethandle,NULL,NULL,&x2,sizeof(x2),FALSE);
+		NetWorkRecvUDP(Nethandle,NULL,NULL,&y2,sizeof(y2),FALSE);
 
-		//裏画面に円を描く
-        DrawCircle(x1,y1,20,GetColor(0,0,255),TRUE);
-        DrawCircle(x2,y2,20,GetColor(255,255,255),TRUE);
+		DrawCircle(x1,y1,20,GetColor(0,0,255),TRUE);
+		DrawCircle(x2,y2,20,GetColor(255,255,255),TRUE);
 
 		ScreenFlip();//裏で描いた絵を表に出す
 		ClearDrawScreen();//画面に書かれた絵を消す
 
-		//円の中心座標を変化させる
-        x1 += 5*vecX;//x方向の速さ
-        y1 += 5*vecY;//y方向の速さ
+		x1 += 5*vecX;//x方向の速さ
+		y1 += 5*vecY;//y方向の速さ
 
 
-		if(CheckHitKey(KEY_INPUT_RIGHT)) x1 += 15;
-		if(CheckHitKey(KEY_INPUT_LEFT)) x1 -= 15;
+		if(CheckHitKey(KEY_INPUT_RIGHT)) x1 += 10;
+		if(CheckHitKey(KEY_INPUT_LEFT)) x1 -= 10;
 
 		//壁に当たったときの反射を設定
-        if(x1>600)vecX = -2;//x座標640超で反転
-        if(x1<0)vecX = 2;//x座標0超で反転
-        if(y1<0)vecY = 1;//y座標0超で反転
-        if(y1>600)vecY = -1;//x座標480超で反転
+		if(x1>600)vecX = -2;//x座標640超で反転
+		if(x1<0)vecX = 2;//x座標0超で反転
+		if(y1<0)vecY = 1;//y座標0超で反転
+		if(y1>600)vecY = -1;//x座標480超で反転
 
 
-        if(CheckHitKey(KEY_INPUT_RETURN))break;
+		if(CheckHitKey(KEY_INPUT_RETURN))break;
 
 
     }//ループはここまで
 	CloseNetWork(Nethandle);
-    DxLib_End() ;//dxlibを閉じる
-    return 0 ;
+	DxLib_End() ;//dxlibを閉じる
+	return 0 ;
 }
