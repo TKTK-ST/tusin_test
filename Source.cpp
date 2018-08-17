@@ -3,8 +3,6 @@
 
 IPDATA ip;
 int Nethandle;
-int x = 0;
-int y = 0;
 int width = 640;
 int height = 640;
 
@@ -20,7 +18,7 @@ public:
 	void All();
 
 private:
-	int m_x,m_y,m_s,r;
+	int x1,y1,x2,y2,m_s,r;
 	int mycolor,yourcolor;
 	int vecX,vecY;
 };
@@ -31,92 +29,116 @@ ball::ball(int x,int y,int s,int red ,int green,int blue){
 	ip.d3 = 8;
 	ip.d4 = 26;
 
-	vecX = 1;
+	vecX = 2;
 	vecY = 1;
-	m_x = x;
-	m_y = y;
+	x1 = x;
+	y1 = y;
 	m_s = s;
 	r = 20;
 	mycolor = GetColor(red,green,blue);
 
 	Nethandle = ConnectNetWork(ip,4444);
 	if (Nethandle != -1){
-		NetWorkSend(Nethandle,&x,sizeof(x));
-		NetWorkSend(Nethandle,&y,sizeof(y));
+		NetWorkSend(Nethandle,&x1,sizeof(x1));
+		NetWorkSend(Nethandle,&y1,sizeof(y1));
 		NetWorkSend(Nethandle,&mycolor,sizeof(mycolor));
 
 		while(!ProcessMessage()){
 			// 取得していない受信データ量が０以外のときはループから抜ける
 			if( GetNetWorkDataLength( Nethandle ) > 0 ) break;
 		}
-		NetWorkRecv(Nethandle,&x,sizeof(x));
+		NetWorkRecv(Nethandle,&x2,sizeof(x2));
 		while(!ProcessMessage()){
 			// 取得していない受信データ量が０以外のときはループから抜ける
 			if( GetNetWorkDataLength( Nethandle ) > 0 ) break;
 		}
-		NetWorkRecv(Nethandle,&y,sizeof(y));
+		NetWorkRecv(Nethandle,&y2,sizeof(y2));
 		while(!ProcessMessage()){
 			// 取得していない受信データ量が０以外のときはループから抜ける
 			if( GetNetWorkDataLength( Nethandle ) > 0 ) break;
 		}
 		NetWorkRecv(Nethandle,&yourcolor,sizeof(yourcolor));
 		CloseNetWork(Nethandle);
-		Nethandle = MakeUDPSocket(6666);
 	}
 }
 ball::~ball(){
-	DeleteUDPSocket(Nethandle);
+
 }
 void ball::Reflection(){
-	if((m_x + r) > width){
-		vecX = -2;//x座標640超で反転
-		m_x = width - r;
+	if((x1 + r) > width){
+		vecX *= -1;
+		x1 = width - r;
 	}
-	if((m_x - r) < 0){
-		vecX = 2;//x座標0超で反転
-		m_x = r;
+	if((x1 - r) < 0){
+		vecX *= -1;
+		x1 = r;
 	}
-	if((m_y - r) < 0){
-		vecY = 1;//y座標0超で反転
-		m_y = r;
+	if((y1 - r) < 0){
+		vecY *= -1;
+		y1 = r;
 	}
-	if((m_y + r) > height){
-		vecY = -1;//x座標480超で反転
-		m_y = height - r;
+	if((y1 + r) > height){
+		vecY *= -1;
+		y1 = height - r;
 	}
 }
 void ball::Connect(){
-	NetWorkSendUDP( Nethandle, ip, 5555, &m_x, sizeof(m_x) );
-	NetWorkSendUDP( Nethandle, ip, 5555 ,&m_y, sizeof(m_y) );
-	NetWorkRecvUDP( Nethandle, NULL, NULL, &x, sizeof(x), FALSE );
-	NetWorkRecvUDP( Nethandle, NULL, NULL, &y, sizeof(y), FALSE );
+	NetWorkSendUDP( Nethandle, ip, 5555, &x1, sizeof(x1) );
+	NetWorkSendUDP( Nethandle, ip, 5555 ,&y1, sizeof(y1) );
+	NetWorkRecvUDP( Nethandle, NULL, NULL, &x2, sizeof(x2), FALSE );
+	NetWorkRecvUDP( Nethandle, NULL, NULL, &y2, sizeof(y2), FALSE );
 }
 void ball::Move(){
-	m_x += m_s*vecX;
-	m_y += m_s*vecY;
+	x1 += m_s*vecX;
+	y1 += m_s*vecY;
 }
 void ball::Input(){
 	if(CheckHitKey(KEY_INPUT_RIGHT)){
-		m_x += 5;
+		x1 += 5;
 	}
 	if(CheckHitKey(KEY_INPUT_LEFT)){
-		m_x -= 5;
+		x1 -= 5;
 	}
 }
 void ball::Draw(){
-	DrawCircle(m_x,m_y,r,mycolor,TRUE);
-	DrawCircle(x,y,r,yourcolor,TRUE);
+	DrawCircle(x1,y1,r,mycolor,TRUE);
+	DrawCircle(x2,y2,r,yourcolor,TRUE);
 }
 void ball::All(){
 	Draw();
-	ScreenFlip();
-	ClearDrawScreen();
 	Move();
 	Input();
 	Reflection();
 	Connect();
 }
 
+class game{
+public:
+	game();
+	~game();
+	void All();
+private:
+	ball* Ball1;
+	ball* Ball2;
+};
+
+game::game(){
+	Ball1 = new ball(450,370,4,0,191,255);
+	Ball2 = new ball(300,160,4,124,252,0);
+	Nethandle = MakeUDPSocket(6666);
+}
+
+game::~game(){
+	delete Ball1;
+	delete Ball2;
+	DeleteUDPSocket(Nethandle);
+}
+void game::All(){
+	ScreenFlip();
+	ClearDrawScreen();
+	Ball1->All();
+	Ball2->All();
+}
 //メイン関数 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine, int nCmdShow ){
 
@@ -126,19 +148,16 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	if( DxLib_Init() == -1 )return -1; //dxlibの初期化に失敗した場合は-1を返してゲーム終了
 	SetDrawScreen(DX_SCREEN_BACK);//裏画面で画像を描き、完成するたびに表示する形式
 
-	
-	ball* Ball = new ball(200,40,4,255,0,0);
-
+	game* Game = new game();
 
 	while(!ProcessMessage()){//エラーが出るまで以下を繰り返す
 	
-		
-		Ball->All();
+		Game->All();
 
-		//if(CheckHitKey(KEY_INPUT_RETURN))break;
+		if(CheckHitKey(KEY_INPUT_RETURN))break;
 
     }//while
-	delete Ball;
+	delete Game;
 	DxLib_End() ;//dxlibを閉じる
 	return 0 ;
 }
