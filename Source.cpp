@@ -1,5 +1,6 @@
 #include "DxLib.h"
 
+//Connecting-Side
 
 IPDATA ip;
 int Nethandle;
@@ -24,10 +25,10 @@ private:
 };
 
 ball::ball(int x,int y,int s,int red ,int green,int blue){
-	ip.d1 = 172;
-	ip.d2 = 16;
-	ip.d3 = 8;
-	ip.d4 = 26;
+	ip.d1 = 192;
+	ip.d2 = 168;
+	ip.d3 = 3;
+	ip.d4 = 4;
 
 	vecX = 2;
 	vecY = 1;
@@ -134,10 +135,10 @@ game::~game(){
 	DeleteUDPSocket(Nethandle);
 }
 void game::All(){
-	ScreenFlip();
 	ClearDrawScreen();
 	Ball1->All();
 	Ball2->All();
+	ScreenFlip();
 }
 //メイン関数 
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine, int nCmdShow ){
@@ -145,9 +146,12 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	//初期設定
 	ChangeWindowMode(TRUE);//ウィンドウを開く
 	SetGraphMode(width,height,32);//ウィンドウを指定の大きさとカラービット数にする
-	if( DxLib_Init() == -1 )return -1; //dxlibの初期化に失敗した場合は-1を返してゲーム終了
 	SetDrawScreen(DX_SCREEN_BACK);//裏画面で画像を描き、完成するたびに表示する形式
+	SetAlwaysRunFlag(TRUE);
+	SetDoubleStartValidFlag(TRUE);
+	SetMainWindowText("Connect");
 
+	if( DxLib_Init() == -1 )return -1; //dxlibの初期化に失敗した場合は-1を返してゲーム終了
 	game* Game = new game();
 
 	while(!ProcessMessage()){//エラーが出るまで以下を繰り返す
